@@ -9,6 +9,17 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import io.spring.guides.gs_producing_web_service.GetCountryRequest;
 import io.spring.guides.gs_producing_web_service.GetCountryResponse;
 
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ws.server.endpoint.annotation.Endpoint;
+import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
+import org.springframework.ws.server.endpoint.annotation.RequestPayload;
+import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
+
+import io.spring.guides.gs_producing_web_service.GetCountryRequest;
+import io.spring.guides.gs_producing_web_service.GetCountryResponse;
+
 @Endpoint
 public class CountryEndpoint {
   private static final String NAMESPACE_URI = "http://spring.io/guides/gs-producing-web-service";
@@ -24,7 +35,10 @@ public class CountryEndpoint {
   @ResponsePayload
   public GetCountryResponse getCountry(@RequestPayload GetCountryRequest request) {
     GetCountryResponse response = new GetCountryResponse();
-    response.setCountry(countryRepository.findCountry(request.getName()));
+    com.soap.nk.entity.Country entityCountry = countryRepository.findCountry(request.getName());
+    io.spring.guides.gs_producing_web_service.Country soapCountry = CountryConverter
+        .convertToSoapCountry(entityCountry);
+    response.setCountry(soapCountry);
 
     return response;
   }
